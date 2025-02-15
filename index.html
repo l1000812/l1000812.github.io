@@ -1,11 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>l1000812的第一个网站</title>
+    <title>文本记录系统</title>
+    <style>
+        body { max-width: 800px; margin: 20px auto; padding: 20px; }
+        .container { background: #f5f5f5; padding: 20px; border-radius: 8px; }
+        textarea { width: 100%; height: 150px; margin: 10px 0; padding: 10px; }
+        .msg-area { border: 1px solid #ddd; padding: 10px; min-height: 200px; margin-top: 20px; }
+        button { padding: 8px 16px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    </style>
 </head>
 <body>
-    <h3>欢迎来到l1000812</h3>
+    <div class="container">
+        <textarea id="input" placeholder="输入内容..."></textarea>
+        <div>
+            <button onclick="saveContent()">发送</button>
+            <button onclick="clearAll()">清空记录</button>
+            <button onclick="exportFile()">导出到a.txt</button>
+        </div>
+        <div class="msg-area" id="messageBoard"></div>
+    </div>
+
+    <script>
+        // 加载本地存储的留言
+        let messages = JSON.parse(localStorage.getItem('messages')) || [];
+        updateMessageBoard();
+
+        // 保存内容
+        function saveContent() {
+            const input = document.getElementById('input');
+            const content = input.value.trim();
+            
+            if (!content) return;
+
+            // 添加时间戳
+            const timestamp = new Date().toLocaleString();
+            messages.push({ content, timestamp });
+            
+            // 更新存储和界面
+            localStorage.setItem('messages', JSON.stringify(messages));
+            updateMessageBoard();
+            input.value = '';
+        }
+
+        // 更新公屏显示
+        function updateMessageBoard() {
+            const board = document.getElementById('messageBoard');
+            board.innerHTML = messages.map(msg => 
+                `<div style="margin: 10px 0; padding: 8px; background: white; border-radius: 4px;">
+                    <div>${msg.content}</div>
+                    <div style="color: #666; font-size: 0.8em;">${msg.timestamp}</div>
+                </div>`
+            ).join('');
+        }
+
+        // 清空记录
+        function clearAll() {
+            if (confirm('确定要清空所有记录吗？')) {
+                localStorage.removeItem('messages');
+                messages = [];
+                updateMessageBoard();
+            }
+        }
+
+        // 导出到文件
+        function exportFile() {
+            const text = messages.map(msg => 
+                `${msg.timestamp}\n${msg.content}\n${'-'.repeat(30)}`
+            ).join('\n');
+            
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'a.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 回车发送
+        document.getElementById('input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                saveContent();
+            }
+        });
+    </script>
 </body>
 </html>
