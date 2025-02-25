@@ -2,90 +2,176 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>文本记录系统</title>
+    <title>NEW-BING 社区中心</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { max-width: 800px; margin: 20px auto; padding: 20px; }
-        .container { background: #f5f5f5; padding: 20px; border-radius: 8px; }
-        textarea { width: 100%; height: 150px; margin: 10px 0; padding: 10px; }
-        .msg-area { border: 1px solid #ddd; padding: 10px; min-height: 200px; margin-top: 20px; }
-        button { padding: 8px 16px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: #f8f9fa;
+            line-height: 1.8;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 6rem 2rem;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+        }
+
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: rgb(255, 255, 255);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            padding: 3rem;
+            background: white;
+            margin: 2rem 0;
+        }
+
+        .rule-section {
+            background: var(--secondary);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <textarea id="input" placeholder="输入内容..."></textarea>
-        <div>
-            <button onclick="saveContent()">发送</button>
-            <button onclick="clearAll()">清空记录</button>
-            <button onclick="exportFile()">导出到a.txt</button>
+    <nav class="top-nav">
+        <a href="a.txt" download class="download-btn">
+            <i class="fas fa-download"></i> 下载社区章程
+        </a>
+    </nav>
+    
+    <style>
+        .top-nav {
+            background: var(--primary);
+            padding: 1rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    
+        .download-btn {
+            color: white;
+            text-decoration: none;
+            padding: 10px 25px;
+            border: 2px solid white;
+            border-radius: 30px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+    
+        .download-btn:hover {
+            background: white;
+            color: var(--primary);
+        }
+    
+        /* 调整顶部间距 */
+        .hero {
+            margin-top: 60px;
+        }
+    </style>
+    
+    <section class="hero">
+        <h1 style="font-size: 3.5rem; margin-bottom: 1rem;">
+            <i class="fas fa-comments"></i> NEW-BING 社区
+        </h1>
+        <p style="font-size: 1.2rem;">没有用户选择的兴趣交流平台</p>
+    </section>
+
+    <div class="feature-cards">
+        <div class="card">
+            <div class="icon"><i class="fas fa-shield-alt"></i></div>
+            <h3>社区特色</h3>
+            <p>
+                • 自由话题讨论区<br>
+                • 主题专属版块<br>
+                • 匿名交流模式<br>
+                • 创意内容工坊
+            </p>
         </div>
-        <div class="msg-area" id="messageBoard"></div>
+
+        <div class="card">
+            <div class="icon"><i class="fas fa-tools"></i></div>
+            <h3>核心功能</h3>
+            <p>
+                • 多级帖子分类系统<br>
+                • 智能内容推荐引擎<br>
+                • 实时聊天模块<br>
+                • 成就徽章体系
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="icon"><i class="fas fa-user-friends"></i></div>
+            <h3>用户权益</h3>
+            <p>
+                • 无
+            </p>
+        </div>
     </div>
 
-    <script>
-        // 加载本地存储的留言
-        let messages = JSON.parse(localStorage.getItem('messages')) || [];
-        updateMessageBoard();
+    <div class="stats">
+        <div>
+            <h2>0+</h2>
+            <p>注册用户</p>
+        </div>
+        <div>
+            <h2>0+</h2>
+            <p>优质帖子</p>
+        </div>
+        <div>
+            <h2>0+</h2>
+            <p>兴趣版块</p>
+        </div>
+    </div>
 
-        // 保存内容
-        function saveContent() {
-            const input = document.getElementById('input');
-            const content = input.value.trim();
-            
-            if (!content) return;
-
-            // 添加时间戳
-            const timestamp = new Date().toLocaleString();
-            messages.push({ content, timestamp });
-            
-            // 更新存储和界面
-            localStorage.setItem('messages', JSON.stringify(messages));
-            updateMessageBoard();
-            input.value = '';
-        }
-
-        // 更新公屏显示
-        function updateMessageBoard() {
-            const board = document.getElementById('messageBoard');
-            board.innerHTML = messages.map(msg => 
-                `<div style="margin: 10px 0; padding: 8px; background: white; border-radius: 4px;">
-                    <div>${msg.content}</div>
-                    <div style="color: #666; font-size: 0.8em;">${msg.timestamp}</div>
-                </div>`
-            ).join('');
-        }
-
-        // 清空记录
-        function clearAll() {
-            if (confirm('确定要清空所有记录吗？')) {
-                localStorage.removeItem('messages');
-                messages = [];
-                updateMessageBoard();
-            }
-        }
-
-        // 导出到文件
-        function exportFile() {
-            const text = messages.map(msg => 
-                `${msg.timestamp}\n${msg.content}\n${'-'.repeat(30)}`
-            ).join('\n');
-            
-            const blob = new Blob([text], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'a.txt';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // 回车发送
-        document.getElementById('input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                saveContent();
-            }
-        });
-    </script>
+    <section class="rule-section">
+        <h2><i class="fas fa-balance-scale"></i> 社区守则</h2>
+        <p style="max-width: 800px; margin: 1rem auto;">
+            我们倡导：实名认证机制 ▫ 内容分级制度 ▫ 友好交流原则 ▫ 原创内容保护<br>
+            禁止：政治敏感话题 ▫ 商业广告发布 ▫ 人身攻击行为 ▫ 侵权内容传播
+        </p>
+        <button style="background: var(--primary); color: white; padding: 1rem 2rem; border: none; border-radius: 30px; margin-top: 1rem; cursor: pointer;">
+            即将推出社区
+        </button>
+    </section>
 </body>
 </html>
